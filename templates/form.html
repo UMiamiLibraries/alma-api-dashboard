@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset=utf-8>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<title>Web Form</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script>
+            $('#createuser a').click(function (e) {
+               e.preventDefault()
+               $(this).tab('show')
+            })
+            $('#searchuser a').click(function (e) {
+               e.preventDefault()
+               $(this).tab('show')
+            })
+        </script>
+	</head>
+	<body>
+		<div class="container">
+		
+            <h1><a href='/'>Special Collections Registration</a></h1>
+
+
+            <ul class="nav nav-pills" role="tablist">
+                <li role="presentation" class="active"><a href="#createuser" aria-controls="createuser" role="tab" data-toggle="tab">Create User</a></li>
+                <li role="presentation"><a href="#searchuser" aria-controls="searchuser" role="tab" data-toggle="tab">Search User</a></li>
+            </ul>
+            
+            <div class="tab-content">
+             
+                <div role="tabpanel" class="tab-pane active" id="createuser">
+                    <form action="/submit-new-user/" method="post">
+                        <div class="form-group">
+                            <label for="fname">First Name</label>
+                            <input type="text" class="form-control" id="fname" name="fname" placeholder="First Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="fname">Last Name</label>
+                            <input type="text" class="form-control" id="lname" name="lname" placeholder="Last Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email address</label>
+                            <input type="email" class="form-control" id="email" name="email" aria-describedby="email" placeholder="Email">
+                        </div>
+                        <div class="form-group">
+                            <label for="primary_id">Username</label>
+                            <input type="text" class="form-control" id="primary_id" name="primary_id" placeholder="Recommended first letter of first name and last name. ex. jsmith.">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="text" class="form-control" id="password" name="password" placeholder="At least one capital letter and one number. Minimum 8 characters">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+                
+                <div role="tabpanel" class="tab-pane" id="searchuser">
+                    <form action="/lookup-user/" method="post">
+                        <div class="form-group">
+                            <label for="userid">User ID</label>
+                            <input type="text" class="form-control" id="userid" name="userid" placeholder="Enter any unique identifier">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+                
+            </div> <!-- tab content -->                 
+
+		</div> <!-- container -->
+	</body>
+</html>
