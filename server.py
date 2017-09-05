@@ -2,10 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 from lxml import etree
 from flask import Flask, render_template, request
-app = Flask(__name__)
+import config
 
-#global variables
-apikey = ''
+app = Flask(__name__)
 
 @app.route('/')
 def index():
@@ -44,7 +43,7 @@ def SubmitNewUser():
     user = etree.tostring(user_xml)
     print(user)
     headers = {'Content-Type': 'application/xml'}
-    payload = {'apikey' : apikey}
+    payload = {'apikey' : config.apikey}
     
     #create request url
     response = requests.post(url, headers=headers, params=payload, data=user)
@@ -66,7 +65,7 @@ def LookupUser():
     userid = request.form['userid']
 
     #create search parameters
-    payload = {'apikey' : apikey,}
+    payload = {'apikey' : config.apikey,}
     url = 'https://api-eu.hosted.exlibrisgroup.com/almaws/v1/users/' + userid + '?'
     response = requests.get(url, params=payload)
     #print("***" + response.url + "***")
