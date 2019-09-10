@@ -13,13 +13,11 @@
              <h1><a href='/sets/'>Set Results</a></h1>
 
             <table class="table">
-                <thead>
                     <tr>
                         <th scope="col">Title</th>
                         <th scope="col">Copy ID</th>
                         <th scope="col">Location</th>
                     </tr>
-                </thead>
                 {% for member in setmembers %}
                 <tr>
                     <td>{{ member[0] }}</td>
