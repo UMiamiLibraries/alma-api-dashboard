@@ -13,25 +13,16 @@
              <h1><a href='/hours/'>Hours  for {{ library }}</a></h1>
 
             <table class="table">
+
                 <tr>
-                    <th scope="col">{{ calendar[0][0] }} <br/> {{ calendar[0][1] }}</th>
-                    <th scope="col">{{ calendar[1][0] }} <br/> {{ calendar[1][1] }}</th>
-                    <th scope="col">{{ calendar[2][0] }} <br/> {{ calendar[2][1] }}</th>
-                    <th scope="col">{{ calendar[3][0] }} <br/> {{ calendar[3][1] }}</th>
-                    <th scope="col">{{ calendar[4][0] }} <br/> {{ calendar[4][1] }}</th>
-                    <th scope="col">{{ calendar[5][0] }} <br/> {{ calendar[5][1] }}</th>
-                    <th scope="col">{{ calendar[6][0] }} <br/> {{ calendar[6][1] }}</th>
-                    <th scope="col">{{ calendar[7][0] }} <br/> {{ calendar[7][1] }}</th>
+                    {% for day in calendar %}
+                    <th scope="col">{{ day[0] }} <br/> {{ day[1] }}</th>
+                    {% endfor %}
                 </tr>
                 <tr>
-                    <td>{{ calendar[0][2] }} - {{ calendar[0][3] }}</td>
-                    <td>{{ calendar[1][2] }} - {{ calendar[1][3] }}</td>
-                    <td>{{ calendar[2][2] }} - {{ calendar[2][3] }}</td>
-                    <td>{{ calendar[3][2] }} - {{ calendar[3][3] }}</td>
-                    <td>{{ calendar[4][2] }} - {{ calendar[4][3] }}</td>
-                    <td>{{ calendar[5][2] }} - {{ calendar[5][3] }}</td>
-                    <td>{{ calendar[6][2] }} - {{ calendar[6][3] }}</td>
-                    <td>{{ calendar[7][2] }} - {{ calendar[7][3] }}</td>
+                    {% for day in calendar %}
+                        <td>{{ day[2] }}</td>
+                    {% endfor %}
                 </tr>
             </table>
 

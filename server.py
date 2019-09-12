@@ -123,10 +123,13 @@ def hours():
         days = root.findall(".//day")
         calendar = []
         for day in days:
-            new_day = [day.find(".//day_of_week").attrib['desc'],
-                       day.find(".//date").text[:-1],
-                       day.findall(".//from")[-1].text,
-                       day.findall(".//to")[-1].text]
+            day_of_week= day.find(".//day_of_week").attrib['desc']
+            date = day.find(".//date").text[:-1]
+            try:
+                hours = day.findall(".//from")[-1].text + " - " + day.findall(".//to")[-1].text
+            except IndexError:
+                hours = "Closed"
+            new_day = [day_of_week, date, hours]
             calendar.append(new_day)
 
         return render_template("hour_results.html", calendar=calendar, library=library_code)
