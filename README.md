@@ -1,4 +1,8 @@
-# alma-users-api
+# dashboard
 
-web form to call alma user api. currently supports creating users and searching for users by id.
-front end built using bootstrap. back end using [flask python framework](http://flask.pocoo.org/).
+web app calling alma api. currently supports creating and searching for users by id and displaying set contents.
+
+## specs
+
+front end built using [bootstrap](https://getbootstrap.com/). 
+back end using [flask python framework](https://flask.palletsprojects.com/en/1.1.x/).
