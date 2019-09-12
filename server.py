@@ -96,8 +96,40 @@ def getsetcontents():
             response = requests.get(member.attrib['link'], params=payload)
             root = etree.fromstring(response.content)
             setmember = [root.find(".//title").text, root.find(".//copy_id").text, root.find(".//temp_location").text]
+            response = requests.get(member.attrib['link'] + '/loans', params=payload)
+            root = etree.fromstring(response.content)
+            setmember.append(root.find(".//user_id").text)
+            setmember.append(root.find(".//due_date").text)
             setmembers.append(setmember)
+
         return render_template("set_results.html", setmembers=setmembers)
+
+
+@app.route('/courses/', methods=['GET', 'POST'])
+def courses():
+    return render_template('courses.html')
+
+
+@app.route('/hours/', methods=['GET', 'POST'])
+def hours():
+    if request.method == 'GET':
+        return render_template("hours.html")
+    else:
+        library_code = request.form['library']
+        payload = {'apikey': config.apikey}
+        url = 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/libraries/' + library_code + '/open-hours?'
+        response = requests.get(url, params=payload)
+        root = etree.fromstring(response.content)
+        days = root.findall(".//day")
+        calendar = []
+        for day in days:
+            new_day = [day.find(".//day_of_week").attrib['desc'],
+                       day.find(".//date").text[:-1],
+                       day.findall(".//from")[-1].text,
+                       day.findall(".//to")[-1].text]
+            calendar.append(new_day)
+
+        return render_template("hour_results.html", calendar=calendar, library=library_code)
 
 
 if __name__ == '__main__':
