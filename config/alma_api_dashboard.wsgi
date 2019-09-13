@@ -1,0 +1,1 @@
+from alma_api_dashboard import app as application
