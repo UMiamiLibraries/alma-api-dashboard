@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from lxml import etree
 from flask import Flask, render_template, request
 import config
+import time
 
 app = Flask(__name__)
 
@@ -67,7 +68,7 @@ def lookupuser():
 
         #create search parameters
         payload = {'apikey' : config.apikey}
-        url = 'https://api-eu.hosted.exlibrisgroup.com/almaws/v1/users/' + userid + '?'
+        url = 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/' + userid + '?'
         response = requests.get(url, params=payload)
         root = etree.fromstring(response.content)
         names = root.findall(".//full_name")
@@ -109,7 +110,7 @@ def getsetcontents():
 def courses():
     return render_template('courses.html')
 
-
+# TODO: make the ate the day before
 @app.route('/hours/', methods=['GET', 'POST'])
 def hours():
     if request.method == 'GET':
@@ -133,6 +134,35 @@ def hours():
             calendar.append(new_day)
 
         return render_template("hour_results.html", calendar=calendar, library=library_code)
+
+
+@app.route('/flip-to-external/', methods=['GET', 'POST'])
+def fliptoexternal():
+    if request.method == 'GET':
+        return render_template('flip_to_external.html')
+    else:
+        headers = {'Content-Type': 'application/xml'}
+        payload = {'apikey': config.apikey}
+        userids = request.form['userids'].splitlines()
+        successusers = []
+        failusers = []
+        for userid in userids:
+            url = 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/' + userid.strip() + '?'
+            response = requests.get(url, params=payload)
+            root = etree.fromstring(response.content)
+            try:
+                name = root.find(".//full_name").text
+                if root.find(".//account_type").text != 'EXTERNAL':
+                    root.find(".//account_type").attrib['desc'] = 'External'
+                    root.find(".//account_type").text = 'EXTERNAL'
+                    root.find(".//external_id").text = 'SISEMP'
+                    requests.put(url, headers=headers, params=payload, data=etree.tostring(root))
+                    successusers.append([name, userid])
+                else:
+                    failusers.append([name, userid + " is already external"])
+            except AttributeError:
+                failusers.append([name, userid])
+        return render_template("flip_to_external_results.html", successusers=successusers, failusers=failusers, userids=userids)
 
 
 if __name__ == '__main__':

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Alma Sets</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	</head>
+	<body>
+        <div class="container">
+
+             <h1><a href='/flip-to-external/'>Flip to external results</a></h1>
+            <p>List of users entered: {% for user in userids %}{{ user }},{% endfor %}</p>
+
+            {% if successusers %}
+            <h2>success</h2>
+                {% for success in successusers %}
+                    <p>{{ success[0] }} - {{ success[1] }}</p>
+                {% endfor %}
+            {% endif %}
+
+            {% if failusers %}
+            <h2>failed</h2>
+                {% for fail in failusers %}
+                    <p>{{ fail[0] }} - {{ fail[1] }} </p>
+                {% endfor %}
+            {% endif %}
+        </div>
+	</body>
+</html>
