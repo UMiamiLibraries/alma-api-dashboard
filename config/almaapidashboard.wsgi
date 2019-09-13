@@ -1,1 +1,1 @@
-from alma_api_dashboard import app as application
+from almaapidashboard import app as application
