@@ -1,21 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset=utf-8>
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>Alma Hours</title>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-	</head>
-	<body>
-		<div class="container">
+    {% extends "base.html" %}
+    {% block content %}
 
-            <h1><a href='/sets/'>Hours</a></h1>
+    {% if method == 'GET' %}
+
+            <h1><a href="{{url_for('hours')}}">Hours</a></h1>
 
             <div class="tab-content">
-
                 <div role="tabpanel" class="tab-pane active" id="gethours">
                     <form action="/hours/" method="post">
                         <div class="form-group">
@@ -24,7 +14,7 @@
                                 <option value="BUSINESS">Business</option>
                                 <option value="LAW">Law</option>
                                 <option value="MARINE">Marine</option>
-                                <option value="MEDICAL">Medical</option>
+                                <option value="MED">Medical</option>
                                 <option value="MUSIC">Music</option>
                                 <option value="RICHTER">Richter</option>
                             </select>
@@ -32,9 +22,22 @@
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>
+            </div>
 
-            </div> <!-- tab content -->
+    {% else %}
+        <h1><a href='/hours/'>Hours  for {{ library }}</a></h1>
+        <table class="table">
+            <tr>
+                {% for day in calendar %}
+                    <th scope="col">{{ day[0] }} <br/> {{ day[1] }}</th>
+                {% endfor %}
+            </tr>
+            <tr>
+                {% for day in calendar %}
+                 <td>{{ day[2] }}</td>
+                {% endfor %}
+            </tr>
+        </table>
+    {% endif %}
 
-		</div> <!-- container -->
-	</body>
-</html>
+    {% endblock %}

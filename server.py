@@ -1,19 +1,17 @@
 import requests
-from bs4 import BeautifulSoup
 from lxml import etree
 from flask import Flask, render_template, request
 import config
-import time
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def index():
-    return render_template('home.html')
+    return render_template('index.html', view="home")
 
 
-@app.route('/submit-new-user/', methods=['POST'])
+@app.route('/createuser/', methods=['POST'])
 def submitnewuser():
     # get data from flask request object
     fname = request.form['fname']
@@ -40,35 +38,32 @@ def submitnewuser():
     password[0].text = u_password
    
     # define request parameters
-    url = 'https://api-eu.hosted.exlibrisgroup.com/almaws/v1/users?social_authentication=false&send_pin_number_letter=false'
+    url = config.users
     user = etree.tostring(user_xml)
     print(user)
     headers = {'Content-Type': 'application/xml'}
-    payload = {'apikey' : config.apikey}
+    payload = {'apikey': config.apikey, 'social_authentication' : 'false', 'send_pin_number_letter' : 'false'}
     
     # create request url
     response = requests.post(url, headers=headers, params=payload, data=user)
     root = etree.fromstring(response.content)
-    soup = str(BeautifulSoup(etree.tostring(root), 'lxml'))
     names = root.findall(".//full_name")
     try:
-	    name = names[0].text
+        name = names[0].text
     except IndexError:
         return render_template("error_create.html", full_name=full_name)
     return render_template("user_create.html", name=name)
 
 
 @app.route('/users/', methods=['GET', 'POST'])
-def lookupuser():
+def users():
     if request.method == 'GET':
         return render_template('users.html')
     else:
         print("*******searching for user*******")
         userid = request.form['userid']
-
-        #create search parameters
-        payload = {'apikey' : config.apikey}
-        url = 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/' + userid + '?'
+        payload = {'apikey': config.apikey}
+        url = config.user.format(userid=userid)
         response = requests.get(url, params=payload)
         root = etree.fromstring(response.content)
         names = root.findall(".//full_name")
@@ -82,13 +77,13 @@ def lookupuser():
 
 
 @app.route('/sets/', methods=['GET', 'POST'])
-def getsetcontents():
+def sets():
     if request.method == 'GET':
-        return render_template("sets.html")
+        return render_template("sets.html", method=request.method)
     else:
         setid = request.form['setid']
         payload = {'apikey': config.apikey}
-        url = 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/sets/' + setid + '/members?'
+        url = config.sets.format(setid=setid)
         response = requests.get(url, params=payload)
         root = etree.fromstring(response.content)
         memberids = root.findall(".//member")
@@ -102,23 +97,23 @@ def getsetcontents():
             setmember.append(root.find(".//user_id").text)
             setmember.append(root.find(".//due_date").text)
             setmembers.append(setmember)
-
-        return render_template("set_results.html", setmembers=setmembers)
+        return render_template("sets.html", setmembers=setmembers, method=request.method)
 
 
 @app.route('/courses/', methods=['GET', 'POST'])
 def courses():
     return render_template('courses.html')
 
-# TODO: make the ate the day before
+
+# TODO: make the date the day before
 @app.route('/hours/', methods=['GET', 'POST'])
 def hours():
     if request.method == 'GET':
-        return render_template("hours.html")
+        return render_template("hours.html", method=request.method)
     else:
         library_code = request.form['library']
         payload = {'apikey': config.apikey}
-        url = 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/conf/libraries/' + library_code + '/open-hours?'
+        url = config.hours.format(library_code=library_code)
         response = requests.get(url, params=payload)
         root = etree.fromstring(response.content)
         days = root.findall(".//day")
@@ -133,13 +128,13 @@ def hours():
             new_day = [day_of_week, date, hours]
             calendar.append(new_day)
 
-        return render_template("hour_results.html", calendar=calendar, library=library_code)
+        return render_template("hours.html", method=request.method, calendar=calendar, library=library_code)
 
 
 @app.route('/flip-to-external/', methods=['GET', 'POST'])
 def fliptoexternal():
     if request.method == 'GET':
-        return render_template('flip_to_external.html')
+        return render_template('flip_to_external.html', method=request.method)
     else:
         headers = {'Content-Type': 'application/xml'}
         payload = {'apikey': config.apikey}
@@ -147,7 +142,7 @@ def fliptoexternal():
         successusers = []
         failusers = []
         for userid in userids:
-            url = 'https://api-na.hosted.exlibrisgroup.com/almaws/v1/users/' + userid.strip() + '?'
+            url = config.user.format(userid=userid.strip())
             response = requests.get(url, params=payload)
             root = etree.fromstring(response.content)
             try:
@@ -161,8 +156,42 @@ def fliptoexternal():
                 else:
                     failusers.append([name, userid + " is already external"])
             except AttributeError:
-                failusers.append([name, userid])
-        return render_template("flip_to_external_results.html", successusers=successusers, failusers=failusers, userids=userids)
+                failusers.append(userid)
+        return render_template("flip_to_external.html", method=request.method, successusers=successusers,
+                               failusers=failusers, userids=userids)
+
+
+@app.route('/primopermalink/', methods=['GET', 'POST'])
+def primopermalink():
+    if request.method == 'GET':
+        return render_template('permalink.html', method=request.method)
+    else:
+        mmsid = userids = request.form['mmsid']
+        if not mmsid:
+            return render_template("permalink.html", method="request.method", permalink="empty link")
+        else:
+            payload = {'apikey': config.apikey,
+                       'vid': config.vid,
+                       'scope': config.scope,
+                       'inst': config.inst,
+                       'tab': config.tab,
+                       'q': "any,contains," + mmsid}
+            url = config.primo
+            response = requests.get(url, params=payload)
+            jsonrecord = response.json()
+            recordid = (jsonrecord["docs"][0]["pnx"]["search"]["recordid"])[0]
+            permalink = config.primolink.format(recordid=recordid,vid=config.vid,scope=config.scope,tab=config.tab)
+            return render_template("permalink.html", method="request.method", permalink=permalink)
+
+
+def converthour(time):
+    hour = int(time.split(" ")[0][0:2])
+    if hour > 12:
+        hour = hour - 12
+        time = hour + time[2:5] + " PM " + time[9:]
+    else:
+        time = time[2:] + " AM "
+    return time
 
 
 if __name__ == '__main__':

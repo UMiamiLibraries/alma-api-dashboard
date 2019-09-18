@@ -1,35 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset=utf-8>
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>Alma Sets</title>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-	</head>
-	<body>
-		<div class="container">
+    {% extends "base.html" %}
+    {% block content %}
 
-            <h1><a href='/sets/'>Set contents</a></h1>
+            {% if method == 'GET' %}
+                <h1><a href="{{url_for('sets')}}">Sets</a></h1>
 
-            <div class="tab-content">
+                <div class="tab-content">
 
-                <div role="tabpanel" class="tab-pane active" id="getsetcontents">
-                    <form action="/sets/" method="post">
-                        <div class="form-group">
-                            <select class="form-control" name="setid">
-                                <option value="8678452960002976">MUSIC Checked out Equipment</option>
-                                <option value="12382369860002976">Frank Cooper Collection</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
+                    <div role="tabpanel" class="tab-pane active" id="getsetcontents">
+                        <form action="/sets/" method="post">
+                            <div class="form-group">
+                                <select class="form-control" name="setid">
+                                    <option value="8678452960002976">MUSIC Checked out Equipment</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+
                 </div>
+            {% else %}
 
-            </div> <!-- tab content -->
+                <h1><a href='/sets/'>Set Results</a></h1>
 
-		</div> <!-- container -->
-	</body>
-</html>
+                <table class="table">
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Copy ID</th>
+                        <th scope="col">Location</th>
+                        <th scope="col">User ID</th>
+                        <th scope="col">Due Date</th>
+                    </tr>
+                    {% for member in setmembers %}
+                    <tr>
+                        <td>{{ member[0] }}</td>
+                        <td>{{ member[1] }}</td>
+                        <td>{{ member[2] }}</td>
+                        <td>{{ member[3] }}</td>
+                        <td>{{ member[4] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+
+                {% if not setmembers %}
+                <p>Nothing checked out</p>
+                {% endif %}
+
+            {% endif %}
+
+    {% endblock %}

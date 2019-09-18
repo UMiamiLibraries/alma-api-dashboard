@@ -1,0 +1,29 @@
+    {% extends "base.html" %}
+    {% block content %}
+
+            <h1><a href="{{url_for('primopermalink')}}">Primo Permalink</a></h1>
+
+            {% if method == 'GET' %}
+
+
+                <div class="tab-content">
+
+                    <div role="tabpanel" class="tab-pane active" id="createpermalink">
+                        <form action="/primopermalink/" method="post">
+                            <div class="form-group">
+                                MMSID:<input name="mmsid">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+
+                </div>
+            {% else %}
+                    {% if permalink %}
+                        <p><a href="{{permalink}}" target="_blank">{{ permalink }}</a></p>
+                    {% else %}
+                        <p>no mssid</p>
+                    {% endif %}
+            {% endif %}
+
+    {% endblock %}

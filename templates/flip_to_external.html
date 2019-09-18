@@ -1,32 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset=utf-8>
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>Alma Sets</title>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-	</head>
-	<body>
-		<div class="container">
+    {% extends "base.html" %}
+    {% block content %}
 
-            <h1><a href='/flip-to-external/'>Flip to external</a></h1>
+    <h1><a href="{{url_for('index')}}">Flip to external</a></h1>
+    {% if method == 'GET' %}
+        <div class="tab-content">
 
-            <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="fliptoexternal">
+                <form action="/flip-to-external/" method="post">
+                    <div class="form-group">
+                        <textarea rows="9" cols="50" name="userids"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
 
-                <div role="tabpanel" class="tab-pane active" id="fliptoexternal">
-                    <form action="/flip-to-external/" method="post">
-                        <div class="form-group">
-                            <textarea rows="9" cols="50" name="userids"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
-                </div>
+        </div>
+    {% else %}
+        <p>List of users entered: {% for user in userids %}{{ user }},{% endfor %}</p>
 
-            </div> <!-- tab content -->
+        {% if successusers %}
+        <h2>success</h2>
+            {% for success in successusers %}
+                <p>{{ success[0] }} - {{ success[1] }}</p>
+            {% endfor %}
+        {% endif %}
 
-		</div> <!-- container -->
-	</body>
-</html>
+        {% if failusers %}
+        <h2>failed</h2>
+            {% for fail in failusers %}
+                <p>{{ fail }} </p>
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+
+    {% endblock %}
