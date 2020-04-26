@@ -1,5 +1,7 @@
 # alma api dashboard
 
+<img src="static/superapi.jpg" height="150" title="SuperAPI">
+
 web app calling [alma api](https://developers.exlibrisgroup.com/alma/apis/). currently supports:
 * creating and searching for users by id
 * flipping users to external status (hidden)
@@ -13,11 +15,13 @@ front end built using [bootstrap](https://getbootstrap.com/).
 
 back end using [flask python framework](https://flask.palletsprojects.com/en/1.1.x/).
 
+basic authentication
+
 ## setup
 /path/to/development.conf
 
 /path/to/alma-api-dashboard <br>
------server.py <br>
+-----almaapidashboard.py <br>
 -----config.py <br>
 -----almaapidashboard.wsgi <br>
 -----templates/ <br>

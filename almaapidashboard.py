@@ -1,9 +1,16 @@
 import requests
 from lxml import etree
 from flask import Flask, render_template, request
+from flask_basicauth import BasicAuth
 import config
 
 app = Flask(__name__)
+
+app.config['BASIC_AUTH_USERNAME'] = config.username
+app.config['BASIC_AUTH_PASSWORD'] = config.password
+app.config['BASIC_AUTH_FORCE'] = True
+
+basic_auth = BasicAuth(app)
 
 
 @app.route('/')
@@ -20,6 +27,7 @@ def submitnewuser():
     u_username = request.form['primary_id']
     u_password = request.form['password']
 
+    # TODO: use e-factory
     # define user xml object
     user_xml = etree.fromstring('<?xml version="1.0"?><user><record_type desc="Public">PUBLIC</record_type><primary_id></primary_id><first_name></first_name><last_name></last_name><full_name></full_name><user_group desc="Special Collections">SPECCOLL</user_group><preferred_language desc="English">en</preferred_language><account_type desc="Internal">INTERNAL</account_type><external_id></external_id><password></password><force_password_change>true</force_password_change><status desc="Active">ACTIVE</status><contact_info><emails><email preferred="true" segment_type="Internal"><email_address></email_address><email_types><email_type desc="personal">personal</email_type></email_types></email></emails></contact_info><user_roles><user_role><status desc="Active">ACTIVE</status><scope desc="University of Miami">01UOML_INST</scope><role_type desc="Patron">200</role_type></user_role></user_roles></user>')
     
@@ -42,7 +50,7 @@ def submitnewuser():
     user = etree.tostring(user_xml)
     print(user)
     headers = {'Content-Type': 'application/xml'}
-    payload = {'apikey': config.apikey, 'social_authentication' : 'false', 'send_pin_number_letter' : 'false'}
+    payload = {'apikey': config.apikey, 'social_authentication': 'false', 'send_pin_number_letter': 'false'}
     
     # create request url
     response = requests.post(url, headers=headers, params=payload, data=user)
@@ -119,7 +127,7 @@ def hours():
         days = root.findall(".//day")
         calendar = []
         for day in days:
-            day_of_week= day.find(".//day_of_week").attrib['desc']
+            day_of_week  = day.find(".//day_of_week").attrib['desc']
             date = day.find(".//date").text[:-1]
             try:
                 hours = day.findall(".//from")[-1].text + " - " + day.findall(".//to")[-1].text
@@ -166,7 +174,7 @@ def primopermalink():
     if request.method == 'GET':
         return render_template('permalink.html', method=request.method)
     else:
-        mmsid = userids = request.form['mmsid']
+        mmsid = request.form['mmsid']
         if not mmsid:
             return render_template("permalink.html", method="request.method", permalink="empty link")
         else:
@@ -175,20 +183,20 @@ def primopermalink():
                        'scope': config.scope,
                        'inst': config.inst,
                        'tab': config.tab,
-                       'q': "any,contains," + mmsid}
+                       'q': "any,exact," + mmsid}
             url = config.primo
             response = requests.get(url, params=payload)
             jsonrecord = response.json()
             recordid = (jsonrecord["docs"][0]["pnx"]["search"]["recordid"])[0]
-            permalink = config.primolink.format(recordid=recordid,vid=config.vid,scope=config.scope,tab=config.tab)
-            return render_template("permalink.html", method="request.method", permalink=permalink)
+            permalink = config.primolink.format(recordid=recordid, vid=config.vid, scope=config.scope, tab=config.tab)
+            return render_template("permalink.html", method=request.method, permalink=permalink)
 
 
 def converthour(time):
     hour = int(time.split(" ")[0][0:2])
     if hour > 12:
         hour = hour - 12
-        time = hour + time[2:5] + " PM " + time[9:]
+        time = str(hour) + time[2:5] + " PM " + time[9:]
     else:
         time = time[2:] + " AM "
     return time
