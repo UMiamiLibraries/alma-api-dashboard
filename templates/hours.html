@@ -7,7 +7,7 @@
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="gethours">
-                    <form action="/hours/" method="post">
+                    <form action="{{ url_for('hours') }}" method="post">
                         <div class="form-group">
                             <select class="form-control" name="library">
                                 <option value="ARCH">Architecture</option>
@@ -25,7 +25,7 @@
             </div>
 
     {% else %}
-        <h1><a href='/hours/'>Hours  for {{ library }}</a></h1>
+        <h1><a href="{{ url_for('hours') }}">Hours  for {{ library }}</a></h1>
         <table class="table">
             <tr>
                 {% for day in calendar %}

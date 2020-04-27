@@ -10,6 +10,8 @@ app.config['BASIC_AUTH_USERNAME'] = config.username
 app.config['BASIC_AUTH_PASSWORD'] = config.password
 app.config['BASIC_AUTH_FORCE'] = True
 
+app.config['APPLICATION_ROOT'] = '/'
+
 basic_auth = BasicAuth(app)
 
 
@@ -19,7 +21,7 @@ def index():
 
 
 @app.route('/createuser/', methods=['POST'])
-def submitnewuser():
+def createuser():
     # get data from flask request object
     fname = request.form['fname']
     lname = request.form['lname']

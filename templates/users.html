@@ -22,7 +22,7 @@
 	<body>
 		<div class="container">
 		
-            <h1><a href='/users/'>User API</a></h1>
+            <h1><a href="{{ url_for('users') }}">User API</a></h1>
 
 
             <ul class="nav nav-pills" role="tablist">
@@ -33,7 +33,7 @@
             <div class="tab-content">
              
                 <div role="tabpanel" class="tab-pane active" id="createuser">
-                    <form action="/createuser/" method="post">
+                    <form action="{{ url_for('createuser') }}" method="post">
                         <div class="form-group">
                             <label for="fname">First Name</label>
                             <input type="text" class="form-control" id="fname" name="fname" placeholder="First Name">
@@ -54,17 +54,17 @@
                             <label for="password">Password</label>
                             <input type="text" class="form-control" id="password" name="password" placeholder="At least one capital letter and one number. Minimum 8 characters">
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <!-- <button type="submit" class="btn btn-primary">Submit</button>-->
                     </form>
                 </div>
                 
                 <div role="tabpanel" class="tab-pane" id="searchuser">
-                    <form action="/users/" method="post">
+                    <form action="{{ url_for('users') }}" method="post">
                         <div class="form-group">
                             <label for="userid">User ID</label>
                             <input type="text" class="form-control" id="userid" name="userid" placeholder="Enter any unique identifier">
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
                     </form>
                 </div>
                 

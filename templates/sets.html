@@ -2,12 +2,12 @@
     {% block content %}
 
             {% if method == 'GET' %}
-                <h1><a href="{{url_for('sets')}}">Sets</a></h1>
+                <h1><a href="{{ url_for('sets') }}">Sets</a></h1>
 
                 <div class="tab-content">
 
                     <div role="tabpanel" class="tab-pane active" id="getsetcontents">
-                        <form action="/sets/" method="post">
+                        <form action="{{ url_for('sets') }}" method="post">
                             <div class="form-group">
                                 <select class="form-control" name="setid">
                                     <option value="8678452960002976">MUSIC Checked out Equipment</option>
@@ -20,7 +20,7 @@
                 </div>
             {% else %}
 
-                <h1><a href='/sets/'>Set Results</a></h1>
+                <h1><a href="{{ url_for('sets') }}">Set Results</a></h1>
 
                 <table class="table">
                     <tr>
